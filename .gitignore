@@ -1,0 +1,14 @@
+# Video files
+*.webm
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Transcribed files (SRT and text transcripts)
+*.srt
+videos/*.txt
+
+# Keep the .gitkeep file
+!videos/.gitkeep
+
