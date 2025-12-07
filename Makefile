@@ -1,4 +1,4 @@
-VENV_NAME := venv_vibe_letters_to_santa
+VENV_NAME := venv_letters-to-santa
 PYTHON := python3
 PORT := 8000
 

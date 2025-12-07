@@ -12,3 +12,6 @@ videos/*.txt
 # Keep the .gitkeep file
 !videos/.gitkeep
 
+# Virtual environment
+venv_*/
+
