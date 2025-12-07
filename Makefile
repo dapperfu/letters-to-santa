@@ -14,9 +14,9 @@ venv: ${VENV_NAME}
 	@test -f ${VENV_NAME}/bin/pip || (echo "Error: pip not found in venv. Recreating venv..." && rm -rf ${VENV_NAME} && ${PYTHON} -m venv ${VENV_NAME})
 	${VENV_NAME}/bin/python -m pip install --upgrade pip
 	${VENV_NAME}/bin/python -m pip install openai-whisper
-	${VENV_NAME}/bin/python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+	${VENV_NAME}/bin/python -m pip install torch==2.7.1+cu118 torchvision==0.22.1+cu118 torchaudio==2.7.1+cu118 --index-url https://download.pytorch.org/whl/cu118
 	@echo "Installing face extraction dependencies..."
-	${VENV_NAME}/bin/python -m pip install insightface opencv-python scikit-learn
+	${VENV_NAME}/bin/python -m pip install insightface opencv-python scikit-learn onnxruntime
 	@echo "Installing voice extraction dependencies (optional)..."
 	-${VENV_NAME}/bin/python -m pip install pyannote.audio || echo "Warning: pyannote.audio installation failed (optional dependency)"
 	@echo "All dependencies installed successfully"
