@@ -2,7 +2,7 @@ VENV_NAME := venv_vibe_letters_to_santa
 PYTHON := python3
 PORT := 8000
 
-.PHONY: serve clean venv transcribe
+.PHONY: serve clean venv transcribe extract-faces annotate extract-voices process-videos
 
 # Create virtual environment if it doesn't exist
 ${VENV_NAME}:
@@ -15,7 +15,11 @@ venv: ${VENV_NAME}
 	${VENV_NAME}/bin/python -m pip install --upgrade pip
 	${VENV_NAME}/bin/python -m pip install openai-whisper
 	${VENV_NAME}/bin/python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-	@echo "Whisper dependencies installed successfully"
+	@echo "Installing face extraction dependencies..."
+	${VENV_NAME}/bin/python -m pip install insightface opencv-python scikit-learn
+	@echo "Installing voice extraction dependencies (optional)..."
+	-${VENV_NAME}/bin/python -m pip install pyannote.audio || echo "Warning: pyannote.audio installation failed (optional dependency)"
+	@echo "All dependencies installed successfully"
 
 # Serve the application
 serve: ${VENV_NAME}
@@ -39,6 +43,47 @@ transcribe: ${VENV_NAME} venv
 	@echo "Transcribing videos..."
 	${VENV_NAME}/bin/python whisper_transcribe.py --videos-dir videos
 	@echo "Transcription complete"
+
+# Extract and cluster faces from videos
+# Usage: make extract-faces VIDEOS_DIR=videos2
+extract-faces: ${VENV_NAME} venv
+	@VIDEOS_DIR=$${VIDEOS_DIR:-videos}; \
+	echo "Extracting faces from videos in $${VIDEOS_DIR}..."; \
+	${VENV_NAME}/bin/python face_extract.py --videos-dir $${VIDEOS_DIR}; \
+	echo "Face extraction complete"
+
+# Annotate videos with face detection results
+# Usage: make annotate VIDEOS_DIR=videos2
+annotate: ${VENV_NAME} venv
+	@VIDEOS_DIR=$${VIDEOS_DIR:-videos}; \
+	echo "Annotating videos from $${VIDEOS_DIR}..."; \
+	${VENV_NAME}/bin/python video_annotate.py --videos-dir $${VIDEOS_DIR} --output-dir videos_annotated; \
+	echo "Video annotation complete"
+
+# Extract voices per speaker (if pyannote.audio available)
+# Usage: make extract-voices VIDEOS_DIR=videos2
+extract-voices: ${VENV_NAME} venv
+	@VIDEOS_DIR=$${VIDEOS_DIR:-videos}; \
+	echo "Extracting voices from videos in $${VIDEOS_DIR}..."; \
+	${VENV_NAME}/bin/python voice_extract.py --videos-dir $${VIDEOS_DIR}; \
+	echo "Voice extraction complete"
+
+# Process videos: extract faces, annotate, and extract voices
+# Usage: make process-videos VIDEOS_DIR=videos2
+process-videos: ${VENV_NAME} venv
+	@VIDEOS_DIR=$${VIDEOS_DIR:-videos}; \
+	echo "Processing videos from directory: $${VIDEOS_DIR}"; \
+	echo ""; \
+	echo "Step 1: Extracting faces..."; \
+	${VENV_NAME}/bin/python face_extract.py --videos-dir $${VIDEOS_DIR} || true; \
+	echo ""; \
+	echo "Step 2: Annotating videos..."; \
+	${VENV_NAME}/bin/python video_annotate.py --videos-dir $${VIDEOS_DIR} || true; \
+	echo ""; \
+	echo "Step 3: Extracting voices..."; \
+	${VENV_NAME}/bin/python voice_extract.py --videos-dir $${VIDEOS_DIR} || true; \
+	echo ""; \
+	echo "Video processing complete"
 
 # Clean up virtual environment
 clean:
