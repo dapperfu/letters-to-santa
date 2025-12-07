@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letters to Santa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎅 Letters to Santa 🎄</h1>
+            <p class="subtitle">Record your message to Santa!</p>
+        </header>
+        
+        <main>
+            <div class="video-container">
+                <video id="preview" autoplay muted playsinline></video>
+                <div id="status" class="status-message"></div>
+            </div>
+            
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">Send Message to Santa</button>
+                <button id="stopBtn" class="btn btn-secondary" style="display: none;">Stop Recording</button>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
