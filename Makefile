@@ -15,14 +15,14 @@ serve: ${VENV_NAME}
 	SERVER_PID=$$!; \
 	echo "Server started with PID: $$SERVER_PID"; \
 	sleep 2; \
-	echo "Launching Firefox in kiosk mode..."; \
-	firefox --kiosk http://localhost:${PORT} & \
-	FIREFOX_PID=$$!; \
-	echo "Firefox started with PID: $$FIREFOX_PID"; \
+	echo "Launching Chromium in kiosk mode..."; \
+	chromium --kiosk http://localhost:${PORT} & \
+	CHROMIUM_PID=$$!; \
+	echo "Chromium started with PID: $$CHROMIUM_PID"; \
 	echo ""; \
 	echo "Server and browser are running."; \
 	echo "Press Ctrl+C to stop both."; \
-	trap "kill $$SERVER_PID $$FIREFOX_PID 2>/dev/null; exit" INT TERM; \
+	trap "kill $$SERVER_PID $$CHROMIUM_PID 2>/dev/null; exit" INT TERM; \
 	wait $$SERVER_PID
 
 # Clean up virtual environment
