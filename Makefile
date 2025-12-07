@@ -11,9 +11,10 @@ ${VENV_NAME}:
 # Install Whisper and GPU dependencies (for GPU machines)
 venv: ${VENV_NAME}
 	@echo "Installing Whisper and GPU dependencies..."
-	${VENV_NAME}/bin/pip install --upgrade pip
-	${VENV_NAME}/bin/pip install openai-whisper
-	${VENV_NAME}/bin/pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+	@test -f ${VENV_NAME}/bin/pip || (echo "Error: pip not found in venv. Recreating venv..." && rm -rf ${VENV_NAME} && ${PYTHON} -m venv ${VENV_NAME})
+	${VENV_NAME}/bin/python -m pip install --upgrade pip
+	${VENV_NAME}/bin/python -m pip install openai-whisper
+	${VENV_NAME}/bin/python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 	@echo "Whisper dependencies installed successfully"
 
 # Serve the application
