@@ -2,11 +2,19 @@ VENV_NAME := venv_vibe_letters_to_santa
 PYTHON := python3
 PORT := 8000
 
-.PHONY: serve clean
+.PHONY: serve clean venv transcribe
 
 # Create virtual environment if it doesn't exist
 ${VENV_NAME}:
 	${PYTHON} -m venv ${VENV_NAME}
+
+# Install Whisper and GPU dependencies (for GPU machines)
+venv: ${VENV_NAME}
+	@echo "Installing Whisper and GPU dependencies..."
+	${VENV_NAME}/bin/pip install --upgrade pip
+	${VENV_NAME}/bin/pip install openai-whisper
+	${VENV_NAME}/bin/pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+	@echo "Whisper dependencies installed successfully"
 
 # Serve the application
 serve: ${VENV_NAME}
@@ -24,6 +32,12 @@ serve: ${VENV_NAME}
 	echo "Press Ctrl+C to stop both."; \
 	trap "kill $$SERVER_PID $$CHROMIUM_PID 2>/dev/null; exit" INT TERM; \
 	wait $$SERVER_PID
+
+# Transcribe all videos in videos/ directory
+transcribe: venv
+	@echo "Transcribing videos..."
+	${VENV_NAME}/bin/python whisper_transcribe.py --videos-dir videos
+	@echo "Transcription complete"
 
 # Clean up virtual environment
 clean:
