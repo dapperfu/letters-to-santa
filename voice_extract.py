@@ -427,10 +427,11 @@ def main() -> None:
     
     args = parser.parse_args()
     
+    # Gracefully handle missing pyannote.audio (optional dependency)
     if not PYANNOTE_AVAILABLE:
-        print("Error: pyannote.audio is not available.", file=sys.stderr)
+        print("Warning: pyannote.audio is not available. Voice extraction will be skipped.", file=sys.stderr)
         print("Install it with: pip install pyannote.audio", file=sys.stderr)
-        sys.exit(1)
+        return
     
     try:
         if args.file:
