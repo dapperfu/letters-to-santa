@@ -35,7 +35,7 @@ serve: ${VENV_NAME}
 	wait $$SERVER_PID
 
 # Transcribe all videos in videos/ directory
-transcribe: venv
+transcribe: ${VENV_NAME} venv
 	@echo "Transcribing videos..."
 	${VENV_NAME}/bin/python whisper_transcribe.py --videos-dir videos
 	@echo "Transcription complete"
